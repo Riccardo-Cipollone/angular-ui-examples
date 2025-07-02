@@ -7,13 +7,13 @@ import { ChatBubble } from './components/chat-bubble';
   imports: [ChatBubble],
   template: `
     <div class="max-w-screen-sm mx-auto">
-      <app-chat-bubble title="1"></app-chat-bubble>
-      <app-chat-bubble
-        title="2"
-        align="end"
-        variant="secondary"
-      ></app-chat-bubble>
-      <app-chat-bubble title="3" variant="accent"></app-chat-bubble>
+      <app-chat-bubble>
+        <em>Lorem ipsum dolor sit.</em>
+      </app-chat-bubble>
+      <app-chat-bubble align="end" variant="secondary">
+        <strong>Grassetto!</strong>
+      </app-chat-bubble>
+      <app-chat-bubble variant="accent" />
     </div>
   `,
   styles: [],

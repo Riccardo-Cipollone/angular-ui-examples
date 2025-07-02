@@ -6,13 +6,14 @@ import { Component, computed, input } from '@angular/core';
   template: `
     <div class="chat" [class]="classAlign()">
       <div class="chat-bubble" [class]="classVariant()">
-        {{ title() }}
+        <!-- {{ title() }} -->
+        <ng-content>Default content</ng-content>
       </div>
     </div>
   `,
 })
 export class ChatBubble {
-  title = input('...');
+  // title = input('...');
   align = input<AlignType>('start');
   variant = input<Variant>('primary');
 
