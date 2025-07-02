@@ -4,17 +4,8 @@ import { Component, computed, input } from '@angular/core';
   selector: 'app-chat-bubble',
   imports: [],
   template: `
-    <div
-      class="chat"
-      [class.chat-start]="align() === 'start'"
-      [class.chat-end]="align() === 'end'"
-    >
-      <div
-        class="chat-bubble"
-        [class.chat-bubble-primary]="variant() === 'primary'"
-        [class.chat-bubble-secondary]="variant() === 'secondary'"
-        [class.chat-bubble-accent]="variant() === 'accent'"
-      >
+    <div class="chat" [class]="classAlign()">
+      <div class="chat-bubble" [class]="classVariant()">
         {{ title() }}
       </div>
     </div>
@@ -24,6 +15,21 @@ export class ChatBubble {
   title = input('...');
   align = input<AlignType>('start');
   variant = input<Variant>('primary');
+
+  classAlign = computed(() =>
+    this.align() === 'start' ? 'chat-start' : 'chat-end'
+  );
+
+  classVariant = computed(() => {
+    switch (this.variant()) {
+      case 'primary':
+        return 'chat-bubble-primary';
+      case 'secondary':
+        return 'chat-bubble-secondary';
+      case 'accent':
+        return 'chat-bubble-accent';
+    }
+  });
 }
 
 type AlignType = 'start' | 'end';
