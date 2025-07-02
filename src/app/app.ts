@@ -1,13 +1,20 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ChatBubble } from './components/chat-bubble';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [ChatBubble],
   template: `
-    <h1>Welcome to {{title}}!</h1>
-
-    <router-outlet />
+    <div class="max-w-screen-sm mx-auto">
+      <app-chat-bubble title="1"></app-chat-bubble>
+      <app-chat-bubble
+        title="2"
+        align="end"
+        variant="secondary"
+      ></app-chat-bubble>
+      <app-chat-bubble title="3" variant="accent"></app-chat-bubble>
+    </div>
   `,
   styles: [],
 })
