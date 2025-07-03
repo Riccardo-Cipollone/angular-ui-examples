@@ -73,7 +73,7 @@ import { User } from './models/user';
 
   imports: [ReactiveFormsModule, NgClass],
 })
-export class AppComponent implements OnInit {
+export class App implements OnInit {
   http = inject(HttpClient);
   fb = inject(FormBuilder);
   users = signal<Partial<User>[]>([]);
