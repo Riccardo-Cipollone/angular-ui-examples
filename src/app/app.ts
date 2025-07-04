@@ -1,89 +1,38 @@
-import { NgClass } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { User } from './models/user';
+import { HttpClient } from "@angular/common/http";
+import { Component, inject, OnInit, signal } from "@angular/core";
+import { ReactiveFormsModule } from "@angular/forms";
+import { ErrorMsg } from "./components/error-msg";
+import { UserForm } from "./components/user-form";
+import { UserList } from "./components/user-list";
+import { User } from "./models/user";
 
 @Component({
-  selector: 'app-root',
+  selector: "app-root",
   template: `
     <div class="max-w-screen-sm mx-6 sm:mx-auto">
-      @if (error()) {
-      <div class="alert alert-error my-3">
-        {{ error() }}
-      </div>
-      }
+      <app-error-msg [text]="error()"></app-error-msg>
 
-      <form class="my-3" [formGroup]="form" (submit)="saveUser()">
-        <div class="flex gap-2 my-3">
-          <input
-            type="text"
-            formControlName="name"
-            placeholder="name"
-            class="input input-bordered max-w-48"
-          />
-          <input
-            type="text"
-            formControlName="email"
-            placeholder="email"
-            class="input input-bordered max-w-48"
-          />
-        </div>
-
-        <div class="join">
-          <button class="join-item btn btn-success" [disabled]="form.invalid">
-            {{ activeUser()?.id ? 'EDIT' : 'ADD' }}
-          </button>
-
-          @if (activeUser()?.id) {
-          <button
-            type="button"
-            class="join-item btn"
-            (click)="resetActiveUser()"
-          >
-            ADD NEW USER
-          </button>
-          }
-        </div>
-      </form>
-
-      <ul>
-        @for (user of users(); track user.id) {
-        <li
-          class="flex justify-between items-center py-2 border-b"
-          [ngClass]="{
-            'bg-pink-200 text-black': user.id === activeUser()?.id
-          }"
-          (click)="selectUser(user)"
-        >
-          {{ user.name }} ( {{ user.email }} )
-          <button
-            class="btn btn-secondary btn-sm"
-            (click)="deleteUser(user, $event)"
-          >
-            delete
-          </button>
-        </li>
-        } @empty {
-        <div>There are no users</div>
-        }
-      </ul>
+      <app-user-form
+        [activeUser]="activeUser()"
+        (saveUser)="saveUser($event)"
+        (resetActiveUser)="resetActiveUser()"
+      ></app-user-form>
+      <app-user-list
+        [users]="users()"
+        [activeUser]="activeUser()"
+        (selectUser)="selectUser($event)"
+        (deleteUser)="deleteUser($event)"
+      ></app-user-list>
     </div>
   `,
 
-  imports: [ReactiveFormsModule, NgClass],
+  imports: [ReactiveFormsModule, ErrorMsg, UserList, UserForm],
 })
 export class App implements OnInit {
   http = inject(HttpClient);
-  fb = inject(FormBuilder);
   users = signal<Partial<User>[]>([]);
   activeUser = signal<Partial<User> | null>(null);
   error = signal<string | null>(null);
-
-  form = this.fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2)]],
-    email: ['', [Validators.required, Validators.minLength(2)]],
-  });
 
   ngOnInit() {
     this.loadUsers();
@@ -92,7 +41,7 @@ export class App implements OnInit {
   loadUsers() {
     this.error.set(null);
     this.http
-      .get<User[]>('https://jsonplaceholder.typicode.com/users')
+      .get<User[]>("https://jsonplaceholder.typicode.com/users")
       .subscribe({
         next: (res) => {
           this.users.set(res);
@@ -103,8 +52,7 @@ export class App implements OnInit {
       });
   }
 
-  deleteUser(userToDelete: Partial<User>, event: MouseEvent) {
-    event.stopPropagation();
+  deleteUser(userToDelete: Partial<User>) {
     this.error.set(null);
 
     if (userToDelete.id === this.activeUser()?.id) {
@@ -125,27 +73,25 @@ export class App implements OnInit {
       });
   }
 
-  saveUser() {
+  saveUser(formData: Partial<User>) {
     if (this.activeUser()?.id) {
-      this.editUser();
+      this.editUser(formData);
     } else {
-      this.addUser();
+      this.addUser(formData);
     }
   }
 
-  addUser() {
+  addUser(formData: Partial<User>) {
     this.error.set(null);
     this.http
-      .post<Partial<User>>(
-        `https://jsonplaceholder.typicode.com/users/`,
-        this.form.value
-      )
+      .post<
+        Partial<User>
+      >(`https://jsonplaceholder.typicode.com/users/`, formData)
       .subscribe({
         next: (newUser) => {
           this.users.update((users) => {
             return [...users, newUser];
           });
-          this.form.reset();
         },
         error: (err) => {
           this.error.set(`Server error: ${err.status}`);
@@ -153,12 +99,12 @@ export class App implements OnInit {
       });
   }
 
-  editUser() {
+  editUser(formData: Partial<User>) {
     this.error.set(null);
     this.http
       .patch<User>(
         `https://jsonplaceholder.typicode.com/users/${this.activeUser()?.id}`,
-        this.form.value
+        formData,
       )
       .subscribe({
         next: (updatedUser) => {
@@ -179,12 +125,10 @@ export class App implements OnInit {
   }
 
   selectUser(user: Partial<User>) {
-    this.form.patchValue(user);
     this.activeUser.set(user);
   }
 
   resetActiveUser() {
-    this.form.reset();
     this.activeUser.set(null);
   }
 }
