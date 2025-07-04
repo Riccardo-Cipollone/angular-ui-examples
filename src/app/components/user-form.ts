@@ -1,4 +1,11 @@
-import { Component, effect, inject, input, output } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  input,
+  output,
+} from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { User } from "../models/user";
 
@@ -39,6 +46,7 @@ import { User } from "../models/user";
       </div>
     </form>
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserForm {
   fb = inject(FormBuilder);

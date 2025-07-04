@@ -1,5 +1,10 @@
 import { NgClass } from "@angular/common";
-import { Component, effect, input, output } from "@angular/core";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from "@angular/core";
 import { User } from "../models/user";
 
 @Component({
@@ -28,7 +33,7 @@ import { User } from "../models/user";
       }
     </ul>
   `,
-  styles: ``,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UserList {
   users = input<Partial<User>[]>([]);

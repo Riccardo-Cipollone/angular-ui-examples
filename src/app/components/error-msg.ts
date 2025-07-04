@@ -1,4 +1,4 @@
-import { Component, input } from "@angular/core";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
 
 @Component({
   selector: "app-error-msg",
@@ -10,6 +10,7 @@ import { Component, input } from "@angular/core";
       </div>
     }
   `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ErrorMsg {
   text = input.required<string | null>();
