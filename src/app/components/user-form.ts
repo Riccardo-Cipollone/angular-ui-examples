@@ -56,7 +56,7 @@ export class UserForm {
     effect(() => {
       // Necessario per un bug di typescript che non riesce a riconoscere il type del signal
       const activeUser = this.activeUser();
-      if (activeUser) {
+      if (activeUser?.id) {
         this.form.patchValue(activeUser);
       } else {
         this.form.reset();
