@@ -4,6 +4,8 @@ import { UserForm } from "./components/user-form";
 import { UserList } from "./components/user-list";
 import { UserService } from "./services/users";
 import { Picsum } from "./shared/picsum";
+import { StaticMap } from "./shared/static-map";
+import { JsonPipe } from "@angular/common";
 
 @Component({
   selector: "app-root",
@@ -25,10 +27,31 @@ import { Picsum } from "./shared/picsum";
 
       <app-picsum border></app-picsum>
       <app-picsum height="300" width="400" grayscale></app-picsum>
+
+      <div class="flex gap-2 my-2">
+        <button class="btn btn-info" (click)="changeTerrainType('terrain')">
+          Terrain
+        </button>
+        <button class="btn btn-info" (click)="changeTerrainType('light')">
+          Light
+        </button>
+        <button class="btn btn-info" (click)="increment()">+</button>
+        <button class="btn btn-info" (click)="decrement()">-</button>
+      </div>
+      <app-static-map
+        [lat]="location.lat"
+        [lng]="location.lng"
+        [zoom]="location.zoom"
+        [mapType]="location.mapType"
+        h="400"
+        w="400"
+      ></app-static-map>
+
+      <pre>{{ location | json }}</pre>
     </div>
   `,
 
-  imports: [ErrorMsg, UserList, UserForm, Picsum],
+  imports: [ErrorMsg, UserList, UserForm, Picsum, StaticMap, JsonPipe],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
@@ -36,4 +59,29 @@ export class App implements OnInit {
   ngOnInit() {
     this.userSrv.loadUsers();
   }
+
+  location: Location = {
+    lat: 43,
+    lng: 22,
+    zoom: 8,
+    mapType: "light",
+  };
+
+  changeTerrainType(type: "light" | "terrain") {
+    this.location.mapType = type;
+  }
+
+  increment() {
+    this.location.zoom = this.location.zoom + 1;
+  }
+  decrement() {
+    this.location.zoom = this.location.zoom - 1;
+  }
+}
+
+interface Location {
+  lat: number;
+  lng: number;
+  zoom: number;
+  mapType: "light" | "terrain";
 }
