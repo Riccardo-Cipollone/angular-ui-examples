@@ -3,6 +3,7 @@ import { ErrorMsg } from "./components/error-msg";
 import { UserForm } from "./components/user-form";
 import { UserList } from "./components/user-list";
 import { UserService } from "./services/users";
+import { Picsum } from "./shared/picsum";
 
 @Component({
   selector: "app-root",
@@ -21,10 +22,13 @@ import { UserService } from "./services/users";
         (selectUser)="userSrv.selectUser($event)"
         (deleteUser)="userSrv.deleteUser($event)"
       ></app-user-list>
+
+      <app-picsum border></app-picsum>
+      <app-picsum height="300" width="400" grayscale></app-picsum>
     </div>
   `,
 
-  imports: [ErrorMsg, UserList, UserForm],
+  imports: [ErrorMsg, UserList, UserForm, Picsum],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
