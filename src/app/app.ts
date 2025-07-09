@@ -6,12 +6,14 @@ import { UserService } from "./services/users";
 import { Picsum } from "./shared/picsum";
 import { StaticMap } from "./shared/static-map";
 import { JsonPipe } from "@angular/common";
+import { Title } from "./shared/title";
+import { Fx } from "./shared/fx";
 
 @Component({
   selector: "app-root",
   template: `
     <div class="max-w-screen-sm mx-6 sm:mx-auto">
-      <app-error-msg [text]="userSrv.error()"></app-error-msg>
+      <!-- <app-error-msg [text]="userSrv.error()"></app-error-msg>
 
       <app-user-form
         [activeUser]="userSrv.activeUser()"
@@ -26,9 +28,9 @@ import { JsonPipe } from "@angular/common";
       ></app-user-list>
 
       <app-picsum border></app-picsum>
-      <app-picsum height="300" width="400" grayscale></app-picsum>
+      <app-picsum height="300" width="400" grayscale></app-picsum> -->
 
-      <div class="flex gap-2 my-2">
+      <!-- <div class="flex gap-2 my-2">
         <button class="btn btn-info" (click)="changeTerrainType('terrain')">
           Terrain
         </button>
@@ -45,13 +47,24 @@ import { JsonPipe } from "@angular/common";
         [mapType]="location.mapType"
         h="400"
         w="400"
-      ></app-static-map>
+      ></app-static-map> -->
 
-      <pre>{{ location | json }}</pre>
+      <app-title size="sm">Title SM</app-title>
+      <app-title size="md" underlined>Title MD</app-title>
+      <app-title size="xl">Title XL</app-title>
+
+      <app-fx [gap]="16">
+        <div>Lorem ipsum dolor sit.</div>
+        <div>Lorem ipsum dolor sit amet.</div>
+        <div>
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa,
+          temporibus.
+        </div>
+      </app-fx>
     </div>
   `,
 
-  imports: [ErrorMsg, UserList, UserForm, Picsum, StaticMap, JsonPipe],
+  imports: [ErrorMsg, UserList, UserForm, Picsum, StaticMap, Title, Fx],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
