@@ -8,6 +8,7 @@ import { StaticMap } from "./shared/static-map";
 import { JsonPipe } from "@angular/common";
 import { Title } from "./shared/title";
 import { Fx } from "./shared/fx";
+import { FxItem } from "./shared/fx-item";
 
 @Component({
   selector: "app-root",
@@ -49,7 +50,7 @@ import { Fx } from "./shared/fx";
         w="400"
       ></app-static-map> -->
 
-      <app-title size="sm">Title SM</app-title>
+      <!-- <app-title size="sm">Title SM</app-title>
       <app-title size="md" underlined>Title MD</app-title>
       <app-title size="xl">Title XL</app-title>
 
@@ -60,11 +61,17 @@ import { Fx } from "./shared/fx";
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa,
           temporibus.
         </div>
+      </app-fx> -->
+
+      <app-fx [gap]="10" justify="start">
+        <app-fx-item class="bg-red-300" grow>left</app-fx-item>
+        <app-fx-item grow>middle</app-fx-item>
+        <app-fx-item>right</app-fx-item>
       </app-fx>
     </div>
   `,
 
-  imports: [ErrorMsg, UserList, UserForm, Picsum, StaticMap, Title, Fx],
+  imports: [ErrorMsg, UserList, UserForm, Picsum, StaticMap, Title, Fx, FxItem],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
