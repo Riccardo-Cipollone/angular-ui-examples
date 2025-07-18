@@ -9,6 +9,9 @@ import { JsonPipe } from "@angular/common";
 import { Title } from "./shared/title";
 import { Fx } from "./shared/fx";
 import { FxItem } from "./shared/fx-item";
+import { Button } from "./shared/button.component";
+import { ButtonGroup } from "./shared/button-group";
+import { ArrayButton, ButtonArray } from "./shared/button-array";
 
 @Component({
   selector: "app-root",
@@ -57,21 +60,50 @@ import { FxItem } from "./shared/fx-item";
       <app-fx [gap]="16">
         <div>Lorem ipsum dolor sit.</div>
         <div>Lorem ipsum dolor sit amet.</div>
-        <div>
+        <div> 
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Culpa,
           temporibus.
         </div>
       </app-fx> -->
 
-      <app-fx [gap]="10" justify="start">
+      <!-- <app-fx [gap]="10" justify="start">
         <app-fx-item class="bg-red-300" grow>left</app-fx-item>
         <app-fx-item grow>middle</app-fx-item>
         <app-fx-item>right</app-fx-item>
-      </app-fx>
+      </app-fx> -->
+
+      <!-- <app-button-group [gap]="2" borders>
+        <app-button (click)="doSomething()" variant="primary"
+          >primary</app-button
+        >
+        <app-button variant="warning" url="/about">warning</app-button>
+        <app-button url="https://www.learnbydo.ing" variant="accent"
+          >accent</app-button
+        >
+      </app-button-group> -->
+
+      <app-button-array
+        wrap
+        borders
+        align="center"
+        [data]="buttons"
+      ></app-button-array>
     </div>
   `,
 
-  imports: [ErrorMsg, UserList, UserForm, Picsum, StaticMap, Title, Fx, FxItem],
+  imports: [
+    ErrorMsg,
+    UserList,
+    UserForm,
+    Picsum,
+    StaticMap,
+    Title,
+    Fx,
+    FxItem,
+    Button,
+    ButtonGroup,
+    ButtonArray,
+  ],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
@@ -97,6 +129,28 @@ export class App implements OnInit {
   decrement() {
     this.location.zoom = this.location.zoom - 1;
   }
+
+  doSomething() {
+    console.log("somethign");
+  }
+
+  buttons: ArrayButton[] = [
+    {
+      label: "About (internal)",
+      variant: "primary",
+      url: "/about",
+    },
+    {
+      label: "Another (internal)",
+      variant: "primary",
+      url: "/about",
+    },
+    {
+      label: "LearnByDoing (external)",
+      variant: "accent",
+      url: "https://www.learnbydo.ing",
+    },
+  ];
 }
 
 interface Location {
