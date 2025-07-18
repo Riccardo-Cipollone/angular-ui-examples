@@ -1,13 +1,12 @@
-import { NgClass } from "@angular/common";
 import { booleanAttribute, Component, input } from "@angular/core";
 
 @Component({
   selector: "app-button-group",
-  imports: [NgClass],
+  imports: [],
   template: `
     <div
       class="inline-flex flex-wrap gap-3 p-4 rounded-2xl"
-      [ngClass]="{
+      [class]="{
         'gap-1': gap() === 1,
         'gap-2': gap() === 2,
         'gap-4': gap() === 4,

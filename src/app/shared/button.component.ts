@@ -1,17 +1,16 @@
-import { NgClass } from "@angular/common";
 import { Component, computed, input } from "@angular/core";
 
 export type Variant = "primary" | "warning" | "accent";
 
 @Component({
   selector: "app-button",
-  imports: [NgClass],
+  imports: [],
   template: `
     <a
       class="btn"
       [href]="url()"
       [target]="targetValue()"
-      [ngClass]="{
+      [class]="{
         'btn-primary': variant() === 'primary',
         'btn-warning': variant() === 'warning',
         'btn-accent': variant() === 'accent',
