@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, inject, OnInit, signal } from "@angular/core";
 import { ErrorMsg } from "./components/error-msg";
 import { UserForm } from "./components/user-form";
 import { UserList } from "./components/user-list";
@@ -12,6 +12,7 @@ import { FxItem } from "./shared/fx-item";
 import { Button } from "./shared/button.component";
 import { ButtonGroup } from "./shared/button-group";
 import { ArrayButton, ButtonArray } from "./shared/button-array";
+import { SidePanel } from "./shared/side-panel";
 
 @Component({
   selector: "app-root",
@@ -82,12 +83,19 @@ import { ArrayButton, ButtonArray } from "./shared/button-array";
         >
       </app-button-group> -->
 
-      <app-button-array
+      <!-- <app-button-array
         wrap
         borders
         align="center"
         [data]="buttons"
-      ></app-button-array>
+      ></app-button-array> -->
+
+      <div class="flex justify-end">
+        <button class="btn" (click)="isOpen.set(true)">Open side panel</button>
+      </div>
+      <app-side-panel [(isOpen)]="isOpen" [title]="'placeholder'">
+        Lorem ipsum dolor sit amet.
+      </app-side-panel>
     </div>
   `,
 
@@ -103,10 +111,13 @@ import { ArrayButton, ButtonArray } from "./shared/button-array";
     Button,
     ButtonGroup,
     ButtonArray,
+    SidePanel,
   ],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
+
+  isOpen = signal(false);
 
   ngOnInit() {
     this.userSrv.loadUsers();
