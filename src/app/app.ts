@@ -13,6 +13,11 @@ import { Button } from "./shared/button.component";
 import { ButtonGroup } from "./shared/button-group";
 import { ArrayButton, ButtonArray } from "./shared/button-array";
 import { SidePanel } from "./shared/side-panel";
+import { Card } from "./shared/card/card";
+import { CardFooter } from "./shared/card/card-footer";
+import { CardBody } from "./shared/card/card-body";
+import { CardTitle } from "./shared/card/card-title";
+import { CardIcon } from "./shared/card/card-icon";
 
 @Component({
   selector: "app-root",
@@ -90,12 +95,20 @@ import { SidePanel } from "./shared/side-panel";
         [data]="buttons"
       ></app-button-array> -->
 
-      <div class="flex justify-end">
+      <!-- <div class="flex justify-end">
         <button class="btn" (click)="isOpen.set(true)">Open side panel</button>
       </div>
       <app-side-panel [(isOpen)]="isOpen" [title]="'placeholder'">
         Lorem ipsum dolor sit amet.
-      </app-side-panel>
+      </app-side-panel> -->
+      <app-card title="My profile" [(isOpen)]="isCardOpen">
+        <app-card-title>
+          My new Profile
+          <app-card-icon (iconClick)="doSomething()">😎</app-card-icon>
+        </app-card-title>
+        <app-card-body>Lorem ipsum dolor sit amet.</app-card-body>
+        <app-card-footer>Actions</app-card-footer>
+      </app-card>
     </div>
   `,
 
@@ -112,12 +125,18 @@ import { SidePanel } from "./shared/side-panel";
     ButtonGroup,
     ButtonArray,
     SidePanel,
+    Card,
+    CardFooter,
+    CardBody,
+    CardTitle,
+    CardIcon,
   ],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
 
   isOpen = signal(false);
+  isCardOpen = signal(false);
 
   ngOnInit() {
     this.userSrv.loadUsers();
