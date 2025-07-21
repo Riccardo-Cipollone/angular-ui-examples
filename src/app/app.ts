@@ -1,23 +1,10 @@
 import { Component, inject, OnInit, signal } from "@angular/core";
-import { ErrorMsg } from "./components/error-msg";
-import { UserForm } from "./components/user-form";
-import { UserList } from "./components/user-list";
 import { UserService } from "./services/users";
-import { Picsum } from "./shared/picsum";
-import { StaticMap } from "./shared/static-map";
-import { JsonPipe } from "@angular/common";
-import { Title } from "./shared/title";
-import { Fx } from "./shared/fx";
-import { FxItem } from "./shared/fx-item";
-import { Button } from "./shared/button.component";
-import { ButtonGroup } from "./shared/button-group";
-import { ArrayButton, ButtonArray } from "./shared/button-array";
-import { SidePanel } from "./shared/side-panel";
-import { Card } from "./shared/card/card";
-import { CardFooter } from "./shared/card/card-footer";
-import { CardBody } from "./shared/card/card-body";
-import { CardTitle } from "./shared/card/card-title";
-import { CardIcon } from "./shared/card/card-icon";
+import { ArrayButton } from "./shared/button-array";
+import { Weather } from "./shared/weather";
+import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { debounceTime, distinctUntilChanged, map } from "rxjs";
 
 @Component({
   selector: "app-root",
@@ -101,42 +88,47 @@ import { CardIcon } from "./shared/card/card-icon";
       <app-side-panel [(isOpen)]="isOpen" [title]="'placeholder'">
         Lorem ipsum dolor sit amet.
       </app-side-panel> -->
-      <app-card title="My profile" [(isOpen)]="isCardOpen">
+      <!-- <app-card title="My profile" [(isOpen)]="isCardOpen">
         <app-card-title>
           My new Profile
           <app-card-icon (iconClick)="doSomething()">😎</app-card-icon>
         </app-card-title>
         <app-card-body>Lorem ipsum dolor sit amet.</app-card-body>
         <app-card-footer>Actions</app-card-footer>
-      </app-card>
+      </app-card> -->
+
+      <!-- Weather component -->
+      <div class="flex flex-col gap-3">
+        <input
+          type="text"
+          [formControl]="input"
+          placeholder="Search city"
+          class="input input-primary"
+        />
+        <app-weather [city]="value()"></app-weather>
+      </div>
     </div>
   `,
 
-  imports: [
-    ErrorMsg,
-    UserList,
-    UserForm,
-    Picsum,
-    StaticMap,
-    Title,
-    Fx,
-    FxItem,
-    Button,
-    ButtonGroup,
-    ButtonArray,
-    SidePanel,
-    Card,
-    CardFooter,
-    CardBody,
-    CardTitle,
-    CardIcon,
-  ],
+  imports: [Weather, ReactiveFormsModule],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
 
   isOpen = signal(false);
   isCardOpen = signal(false);
+
+  input = new FormControl<string>("", { nonNullable: true });
+  value = toSignal(
+    this.input.valueChanges.pipe(
+      map((text) => text.toLowerCase()),
+      debounceTime(1000),
+      distinctUntilChanged(),
+    ),
+    { initialValue: "" },
+  );
+
+  constructor() {}
 
   ngOnInit() {
     this.userSrv.loadUsers();
