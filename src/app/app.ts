@@ -5,6 +5,9 @@ import { Weather } from "./shared/weather";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged, map } from "rxjs";
+import { Country } from "./models/country";
+import { initialState } from "./models/data";
+import { Tabbar } from "./shared/tabbar/tabbar";
 
 @Component({
   selector: "app-root",
@@ -98,7 +101,7 @@ import { debounceTime, distinctUntilChanged, map } from "rxjs";
       </app-card> -->
 
       <!-- Weather component -->
-      <div class="flex flex-col gap-3">
+      <!-- <div class="flex flex-col gap-3">
         <input
           type="text"
           [formControl]="input"
@@ -106,11 +109,21 @@ import { debounceTime, distinctUntilChanged, map } from "rxjs";
           class="input input-primary"
         />
         <app-weather [city]="value()"></app-weather>
-      </div>
+      </div> -->
+
+      <app-tabbar
+        [items]="countries()"
+        [(selectedItem)]="activeCountry"
+      ></app-tabbar>
+      @if (activeCountry()) {
+        <p class="border border-slate-300 p-3">
+          {{ activeCountry()?.desc }}
+        </p>
+      }
     </div>
   `,
 
-  imports: [Weather, ReactiveFormsModule],
+  imports: [ReactiveFormsModule, Tabbar],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
@@ -127,6 +140,9 @@ export class App implements OnInit {
     ),
     { initialValue: "" },
   );
+
+  countries = signal<Country[]>(initialState);
+  activeCountry = signal<Country | null>(this.countries()[0]);
 
   constructor() {}
 
