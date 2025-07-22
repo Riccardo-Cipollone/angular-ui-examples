@@ -5,6 +5,7 @@ import {
   effect,
   inject,
   input,
+  resource,
   signal,
 } from "@angular/core";
 import { MeteoInterface } from "../models/meteo";
@@ -18,10 +19,13 @@ const ENDPOINT =
   selector: "app-weather",
   imports: [JsonPipe],
   template: `
-    @if (meteo()) {
-      <pre>{{ meteo()?.main?.temp | json }}</pre>
+    @if (meteoResource.value()) {
+      <pre>{{ meteoResource.value()?.main?.temp | json }}</pre>
       <img [src]="meteoIcon()" alt="" />
     }
+    <pre>Value: {{ meteoResource.value() | json }}</pre>
+    <pre>Is Loading: {{ meteoResource.isLoading() | json }}</pre>
+    <pre>Error: {{ $any(meteoResource.error())?.cause }}</pre>
   `,
   styles: ``,
 })
@@ -29,21 +33,42 @@ export class Weather {
   http = inject(HttpClient);
   city = input<string>();
 
-  meteo = signal<MeteoInterface | null>(null);
+  // meteo = signal<MeteoInterface | null>(null);
+  meteoResource = resource<any, any>({
+    params: () => ({ city: this.city() }),
+    loader: async ({ params }) => {
+      console.log("PARAMS: ", params);
+      if (params.city) {
+        const res = await fetch(`${BASE_URL}${ENDPOINT}&q=${params.city}`);
+        if (!res.ok) {
+          throw new Error("Problems while getting meteo for the city");
+        }
+        const data = await res.json();
+        return data;
+      }
+    },
+  });
+
   meteoIcon = computed(() => {
-    const icon = this.meteo()?.weather[0]?.icon;
+    const icon = this.meteoResource.value()?.weather[0]?.icon;
     return icon ? `https://api.openweathermap.org/img/w/${icon}.png` : null;
   });
 
   constructor() {
     effect(() => {
-      console.log(this.city());
-      this.http
-        .get<MeteoInterface>(`${BASE_URL}${ENDPOINT}&q=${this.city()}`)
-        .subscribe((meteo) => {
-          console.log("Response: ", meteo);
-          this.meteo.set(meteo);
-        });
+      console.log(this.meteoResource.error()?.message);
     });
   }
+
+  // constructor() {
+  //   effect(() => {
+  //     console.log(this.city());
+  //     this.http
+  //       .get<MeteoInterface>(`${BASE_URL}${ENDPOINT}&q=${this.city()}`)
+  //       .subscribe((meteo) => {
+  //         console.log("Response: ", meteo);
+  //         this.meteo.set(meteo);
+  //       });
+  //   });
+  // }
 }
