@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, signal } from "@angular/core";
+import { Component, inject, linkedSignal, OnInit, signal } from "@angular/core";
 import { UserService } from "./services/users";
 import { ArrayButton } from "./shared/button-array";
 import { Weather } from "./shared/weather";
 import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged, map } from "rxjs";
-import { Country } from "./models/country";
+import { City, Country } from "./models/country";
 import { initialState } from "./models/data";
 import { Tabbar } from "./shared/tabbar/tabbar";
 
@@ -115,9 +115,16 @@ import { Tabbar } from "./shared/tabbar/tabbar";
         [items]="countries()"
         [(selectedItem)]="activeCountry"
       ></app-tabbar>
+      @if (activeCountry(); as country) {
+        <app-tabbar
+          [items]="country.cities"
+          labelField="name"
+          [(selectedItem)]="activeCity"
+        />
+      }
       @if (activeCountry()) {
         <p class="border border-slate-300 p-3">
-          {{ activeCountry()?.desc }}
+          {{ activeCity()?.desc }}
         </p>
       }
     </div>
@@ -143,6 +150,9 @@ export class App implements OnInit {
 
   countries = signal<Country[]>(initialState);
   activeCountry = signal<Country | null>(this.countries()[0]);
+  activeCity = linkedSignal<City | null>(() => {
+    return this.activeCountry()?.cities[0] ?? null;
+  });
 
   constructor() {}
 
