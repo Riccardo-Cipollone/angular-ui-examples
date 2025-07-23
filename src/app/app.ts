@@ -2,7 +2,7 @@ import { Component, inject, linkedSignal, OnInit, signal } from "@angular/core";
 import { UserService } from "./services/users";
 import { ArrayButton } from "./shared/button-array";
 import { Weather } from "./shared/weather";
-import { FormControl, ReactiveFormsModule } from "@angular/forms";
+import { FormControl, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged, map } from "rxjs";
 import { City, Country } from "./models/country";
@@ -10,6 +10,7 @@ import { initialState, MOCK_DATA } from "./models/data";
 import { Tabbar } from "./shared/tabbar/tabbar";
 import { GridList } from "./shared/grid-list";
 import { Chartjs, ChartType } from "./shared/chartjs";
+import { Cube3d } from "./shared/cube3d/cube3d";
 
 @Component({
   selector: "app-root",
@@ -179,10 +180,21 @@ import { Chartjs, ChartType } from "./shared/chartjs";
         [labels]="labels()"
         [type]="type()"
       ></app-chartjs>
+
+      <div class="divider">3JS</div>
+      <app-cube3d [color]="color"></app-cube3d>
+      <input type="color" [(ngModel)]="color" />
     </div>
   `,
 
-  imports: [ReactiveFormsModule, Tabbar, GridList, Chartjs],
+  imports: [
+    ReactiveFormsModule,
+    FormsModule,
+    Tabbar,
+    GridList,
+    Chartjs,
+    Cube3d,
+  ],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
@@ -207,6 +219,8 @@ export class App implements OnInit {
   });
 
   items = MOCK_DATA;
+
+  color = "ff00cc";
 
   constructor() {}
 
