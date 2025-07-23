@@ -9,6 +9,7 @@ import { City, Country } from "./models/country";
 import { initialState, MOCK_DATA } from "./models/data";
 import { Tabbar } from "./shared/tabbar/tabbar";
 import { GridList } from "./shared/grid-list";
+import { Chartjs, ChartType } from "./shared/chartjs";
 
 @Component({
   selector: "app-root",
@@ -129,6 +130,8 @@ import { GridList } from "./shared/grid-list";
         </p>
       } -->
 
+      <div class="divider">Grid List with ngTemplateOutlet</div>
+
       <app-grid-list
         [items]="items"
         viewMode="grid"
@@ -152,10 +155,34 @@ import { GridList } from "./shared/grid-list";
           {{ index + 1 }}. {{ item.name }}
         </span>
       </ng-template>
+
+      <div class="divider">Chart Component</div>
+      <div class="flex join my-3">
+        <button class="btn btn-info join-item" (click)="loadData1()">
+          Week
+        </button>
+        <button class="btn btn-info join-item" (click)="loadData2()">
+          Year
+        </button>
+      </div>
+
+      <div class="flex gap-2 my-3 flex-wrap">
+        <button class="btn" (click)="changeType('pie')">Pie</button>
+        <button class="btn" (click)="changeType('bar')">Bar</button>
+        <button class="btn" (click)="changeType('line')">line</button>
+        <button class="btn" (click)="changeType('doughnut')">doughnut</button>
+        <button class="btn" (click)="changeType('radar')">radar</button>
+        <button class="btn" (click)="changeType('polarArea')">polarArea</button>
+      </div>
+      <app-chartjs
+        [chartData]="data()"
+        [labels]="labels()"
+        [type]="type()"
+      ></app-chartjs>
     </div>
   `,
 
-  imports: [ReactiveFormsModule, Tabbar, GridList],
+  imports: [ReactiveFormsModule, Tabbar, GridList, Chartjs],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
@@ -207,6 +234,66 @@ export class App implements OnInit {
 
   doSomething() {
     console.log("somethign");
+  }
+
+  data = signal<number[]>([
+    8, 7, 6, 6, 6, 7, 8, 10, 14, 18, 22, 24, 26, 25, 24, 22, 20, 18, 16, 14, 12,
+    10, 9, 8,
+  ]);
+  labels = signal<string[]>([
+    "00:00",
+    "01:00",
+    "02:00",
+    "03:00",
+    "04:00",
+    "05:00",
+    "06:00",
+    "07:00",
+    "08:00",
+    "09:00",
+    "10:00",
+    "11:00",
+    "12:00",
+    "13:00",
+    "14:00",
+    "15:00",
+    "16:00",
+    "17:00",
+    "18:00",
+    "19:00",
+    "20:00",
+    "21:00",
+    "22:00",
+    "23:00",
+  ]);
+
+  type = signal<ChartType>("bar");
+
+  loadData1() {
+    this.labels.set(["mon", "tue", "wed", "thu", "fri", "sat", "sun"]);
+    this.data.set([11, 12, 13, 18, 20, 22, 15]);
+  }
+
+  loadData2() {
+    this.labels.set([
+      "jan",
+      "feb",
+      "mar",
+      "apr",
+      "may",
+      "jun",
+      "jul",
+      "aug",
+      "sep",
+      "oct",
+      "nov",
+      "dec",
+    ]);
+    this.data.set([5, 7, 10, 15, 20, 25, 30, 28, 22, 15, 10, 6]);
+  }
+
+  changeType(type: ChartType) {
+    this.type.set(type);
   }
 
   buttons: ArrayButton[] = [
