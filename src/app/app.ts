@@ -6,8 +6,9 @@ import { FormControl, ReactiveFormsModule } from "@angular/forms";
 import { toSignal } from "@angular/core/rxjs-interop";
 import { debounceTime, distinctUntilChanged, map } from "rxjs";
 import { City, Country } from "./models/country";
-import { initialState } from "./models/data";
+import { initialState, MOCK_DATA } from "./models/data";
 import { Tabbar } from "./shared/tabbar/tabbar";
+import { GridList } from "./shared/grid-list";
 
 @Component({
   selector: "app-root",
@@ -111,7 +112,7 @@ import { Tabbar } from "./shared/tabbar/tabbar";
         <app-weather [city]="value()"></app-weather>
       </div> -->
 
-      <app-tabbar
+      <!-- <app-tabbar
         [items]="countries()"
         [(selectedItem)]="activeCountry"
       ></app-tabbar>
@@ -126,11 +127,35 @@ import { Tabbar } from "./shared/tabbar/tabbar";
         <p class="border border-slate-300 p-3">
           {{ activeCity()?.desc }}
         </p>
-      }
+      } -->
+
+      <app-grid-list
+        [items]="items"
+        viewMode="grid"
+        [templateRef]="templateRef"
+      ></app-grid-list>
+
+      <app-grid-list
+        [items]="items"
+        viewMode="grid"
+        [templateRef]="templateRef2"
+      ></app-grid-list>
+
+      <ng-template #templateRef let-item let-index="index">
+        <span class="border-2 p-3 text-center">
+          {{ index + 1 }}. {{ item.name }}
+        </span>
+      </ng-template>
+
+      <ng-template #templateRef2 let-item let-index="index">
+        <span class="bg-slate-500 rounded-xl p-3">
+          {{ index + 1 }}. {{ item.name }}
+        </span>
+      </ng-template>
     </div>
   `,
 
-  imports: [ReactiveFormsModule, Tabbar],
+  imports: [ReactiveFormsModule, Tabbar, GridList],
 })
 export class App implements OnInit {
   userSrv = inject(UserService);
@@ -153,6 +178,8 @@ export class App implements OnInit {
   activeCity = linkedSignal<City | null>(() => {
     return this.activeCountry()?.cities[0] ?? null;
   });
+
+  items = MOCK_DATA;
 
   constructor() {}
 

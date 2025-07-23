@@ -1,6 +1,5 @@
-import { Component, input, model, signal } from "@angular/core";
-import { Country } from "../../models/country";
 import { JsonPipe } from "@angular/common";
+import { Component, input, model } from "@angular/core";
 
 @Component({
   selector: "app-tabbar",
